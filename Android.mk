@@ -9,14 +9,23 @@ LOCAL_SRC_FILES := \
 
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH) \
-	external/libnl-headers \
 	external/openssl/include
+
+ifneq ($(wildcard external/libnl),)
+LOCAL_C_INCLUDES += external/libnl/include
+else
+LOCAL_C_INCLUDES += external/libnl-headers
+endif
 
 LOCAL_CFLAGS := -DUSE_SSL -DPUBKEY_DIR=\"\" -DCONFIG_LIBNL20
 
 LOCAL_MODULE_TAGS := eng
 LOCAL_SHARED_LIBRARIES := libcrypto
+ifneq ($(wildcard external/libnl),)
+LOCAL_SHARED_LIBRARIES += libnl
+else
 LOCAL_STATIC_LIBRARIES := libnl_2
+endif
 LOCAL_MODULE := crda
 
 include $(BUILD_EXECUTABLE)
@@ -38,7 +47,11 @@ LOCAL_CFLAGS := -DUSE_SSL -DPUBKEY_DIR=\"\" -DCONFIG_LIBNL20
 
 LOCAL_MODULE_TAGS := eng
 LOCAL_SHARED_LIBRARIES := libcrypto
+ifneq ($(wildcard external/libnl),)
+LOCAL_SHARED_LIBRARIES += libnl
+else
 LOCAL_STATIC_LIBRARIES := libnl_2
+endif
 LOCAL_MODULE := regdbdump
 
 include $(BUILD_EXECUTABLE)
